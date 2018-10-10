@@ -27,7 +27,7 @@
   <servlet-mapping>
     <servlet-name>ChatSubmitServlet</servlet-name>
     <url-pattern>/chatSubmitServlet</url-pattern>
-  </servlet-mapping>  
+  </servlet-mapping>
   <servlet>
     <servlet-name>ChatListServlet</servlet-name>
     <servlet-class>chat.ChatListServlet</servlet-class>
@@ -35,5 +35,13 @@
   <servlet-mapping>
     <servlet-name>ChatListServlet</servlet-name>
     <url-pattern>/chatListServlet</url-pattern>
-  </servlet-mapping>    
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>UserLoginServlet</servlet-name>
+    <servlet-class>user.UserLoginServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UserLoginServlet</servlet-name>
+    <url-pattern>/userLogin</url-pattern>
+  </servlet-mapping>  
 </web-app>

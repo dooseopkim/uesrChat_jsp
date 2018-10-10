@@ -36,7 +36,7 @@ public class UserDAO {
 			Connection conn = null;
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
-			String SQL = "SELECT * FROM USER userID = ?";
+			String SQL = "SELECT * FROM USER WHERE userID = ?";
 			try {
 				conn = dataSource.getConnection();
 				pstmt = conn.prepareStatement(SQL);
