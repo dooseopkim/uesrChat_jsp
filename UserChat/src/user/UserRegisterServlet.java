@@ -26,26 +26,26 @@ public class UserRegisterServlet extends HttpServlet {
 				|| userPassword2 == null || userPassword2.equals("") || userName ==null || userName.equals("")
 				|| userAge == null || userAge.equals("") || userGender ==null || userGender.equals("")
 				|| userEmail == null || userEmail.equals("")) {
-			request.getSession().setAttribute("messageType", "¿À·ù ¸Ş¼¼Áö");
-			request.getSession().setAttribute("message", "¸ğµç ³»¿ëÀ» ÀÔ·ÂÇÏ¼¼¿ä.");
+			request.getSession().setAttribute("messageType", "ì˜¤ë¥˜ ë©”ì„¸ì§€");
+			request.getSession().setAttribute("messageContent", "ëª¨ë“  ë‚´ìš©ì„ ì…ë ¥í•˜ì„¸ìš”.");
 			response.sendRedirect("join.jsp");
 			return;
 		}
 		if(!userPassword1.equals(userPassword2)) {
-			request.getSession().setAttribute("messageType", "¿À·ù ¸Ş¼¼Áö");
-			request.getSession().setAttribute("message", "ºñ¹Ğ¹øÈ£°¡ ¼­·Î ´Ù¸¨´Ï´Ù.");
+			request.getSession().setAttribute("messageType", "ì˜¤ë¥˜ ë©”ì„¸ì§€");
+			request.getSession().setAttribute("messageContent", "ë¹„ë°€ë²ˆí˜¸ê°€ ì„œë¡œ ë‹¤ë¦…ë‹ˆë‹¤.");
 			response.sendRedirect("join.jsp");
 			return;			
 		}
 		int result = new UserDAO().register(userID, userPassword1, userName, userAge, userGender, userEmail, userProfile);
-		if(result ==1) {
-			request.getSession().setAttribute("messageType", "¼º°ø ¸Ş¼¼Áö");
-			request.getSession().setAttribute("message", "È¸¿ø°¡ÀÔ¿¡ ¼º°ø Çß½À´Ï´Ù.");
+		if(result == 1) {
+			request.getSession().setAttribute("messageType", "ì„±ê³µ ë©”ì„¸ì§€");
+			request.getSession().setAttribute("messageContent", "íšŒì›ê°€ì…ì— ì„±ê³µ í–ˆìŠµë‹ˆë‹¤.");
 			response.sendRedirect("index.jsp");
 			return;				
 		} else {
-			request.getSession().setAttribute("messageType", "¿À·ù ¸Ş¼¼Áö");
-			request.getSession().setAttribute("message", "ÀÌ¹Ì Á¸ÀçÇÏ´Â È¸¿øÀÔ´Ï´Ù.");
+			request.getSession().setAttribute("messageType", "ì˜¤ë¥˜ ë©”ì„¸ì§€");
+			request.getSession().setAttribute("messageContent", "ì´ë¯¸ ì¡´ì¬í•˜ëŠ” íšŒì›ì…ë‹ˆë‹¤.");
 			response.sendRedirect("join.jsp");
 			return;				
 		}

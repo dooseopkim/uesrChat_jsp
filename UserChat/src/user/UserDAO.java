@@ -24,12 +24,12 @@ public class UserDAO {
 		}
 		
 		/**
-		 * È¸¿ø ·Î±×ÀÎ ÇÔ¼ö
+		 * íšŒì› ë¡œê·¸ì¸ í•¨ìˆ˜
 		 * 
 		 * @author kds
 		 * @since 2018.10.10
-		 * @param userID : È¸¿ø ¾ÆÀÌµğ,
-		 * 		  userPassword : È¸¿ø ºñ¹Ğ¹øÈ£
+		 * @param userID : íšŒì› ì•„ì´ë””,
+		 * 		  userPassword : íšŒì› ë¹„ë°€ë²ˆí˜¸
 		 * 
 		 * */
 		public int login(String userID, String userPassword) {
@@ -44,11 +44,11 @@ public class UserDAO {
 				rs = pstmt.executeQuery();
 				if (rs.next()) {
 					if(rs.getString("userPassword").equals(userPassword)) {
-						return 1;	//·Î±×ÀÎ¿¡ ¼º°ø
+						return 1;	//ë¡œê·¸ì¸ì— ì„±ê³µ
 					}
-					return 2;	//ºñ¹Ğ¹øÈ£°¡ Æ²¸²
+					return 2;	//ë¹„ë°€ë²ˆí˜¸ê°€ í‹€ë¦¼
 				}else {
-					return 0;	//ÇØ´ç »ç¿ëÀÚ°¡ Á¸ÀçÇÏÁö ¾ÊÀ½
+					return 0;	//í•´ë‹¹ ì‚¬ìš©ìê°€ ì¡´ì¬í•˜ì§€ ì•ŠìŒ
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -61,31 +61,31 @@ public class UserDAO {
 					e.printStackTrace();
 				}
 			}
-			return -1;	//µ¥ÀÌÅÍ º£ÀÌ½º ¿À·ù
+			return -1;	//ë°ì´í„° ë² ì´ìŠ¤ ì˜¤ë¥˜
 		}
 		
 		/**
-		 * ¾ÆÀÌµğ Áßº¹Ã¼Å© ÇÔ¼ö
+		 * ì•„ì´ë”” ì¤‘ë³µì²´í¬ í•¨ìˆ˜
 		 * 
 		 * @author kds
 		 * @since 2018.10.10
-		 * @param userID : È¸¿ø ¾ÆÀÌµğ
+		 * @param userID : íšŒì› ì•„ì´ë””
 		 * 
 		 * */
 		public int registerCheck(String userID) {
 			Connection conn = null;
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
-			String SQL = "SELECT * FROM USER userID = ?";
+			String SQL = "SELECT * FROM USER WHERE userID = ?";
 			try {
 				conn = dataSource.getConnection();
 				pstmt = conn.prepareStatement(SQL);
 				pstmt.setString(1, userID);
 				rs = pstmt.executeQuery();
 				if (rs.next() || userID.equals("")) {
-					return 0;	//ÀÌ¹Ì Á¸ÀçÇÏ´Â È¸¿ø
+					return 0;	//ì´ë¯¸ ì¡´ì¬í•˜ëŠ” íšŒì›
 				}else {
-					return 1;	//°¡ÀÔ °¡´ÉÇÑ È¸¿ø ¾ÆÀÌµğ
+					return 1;	//ê°€ì… ê°€ëŠ¥í•œ íšŒì› ì•„ì´ë””
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -98,27 +98,26 @@ public class UserDAO {
 					e.printStackTrace();
 				}
 			}
-			return -1;	//µ¥ÀÌÅÍ º£ÀÌ½º ¿À·ù
+			return -1;	//ë°ì´í„° ë² ì´ìŠ¤ ì˜¤ë¥˜
 		}		
 		
 		/**
-		 * È¸¿ø°¡ÀÔ ÇÔ¼ö
+		 * íšŒì›ê°€ì… í•¨ìˆ˜
 		 * 
 		 * @author kds
 		 * @since 2018.10.10
-		 * @param userID : È¸¿ø ¾ÆÀÌµğ,
-		 *		  userPassword : ºñ¹Ğ¹øÈ£,
-		 *		  userName : ÀÌ¸§,
-		 *		  userAge : ³ªÀÌ,
-		 *		  userGender : ¼ºº°,
-		 *		  userEmail : ÀÌ¸ŞÀÏ,
-		 *		  userProfile : ÇÁ·ÎÇÊ(»çÁø)
+		 * @param userID : íšŒì› ì•„ì´ë””,
+		 *		  userPassword : ë¹„ë°€ë²ˆí˜¸,
+		 *		  userName : ì´ë¦„,
+		 *		  userAge : ë‚˜ì´,
+		 *		  userGender : ì„±ë³„,
+		 *		  userEmail : ì´ë©”ì¼,
+		 *		  userProfile : í”„ë¡œí•„(ì‚¬ì§„)
 		 * 
 		 * */
 		public int register(String userID,String userPassword, String userName, String userAge, String userGender, String userEmail, String userProfile) {
 			Connection conn = null;
 			PreparedStatement pstmt = null;
-			ResultSet rs = null;
 			String SQL = "INSERT INTO USER VALUES(?,?,?,?,?,?,?)";
 			try {
 				conn = dataSource.getConnection();
@@ -130,23 +129,17 @@ public class UserDAO {
 				pstmt.setString(5, userGender);
 				pstmt.setString(6, userEmail);
 				pstmt.setString(7, userProfile);
-				rs = pstmt.executeQuery();
-				if (rs.next() || userID.equals("")) {
-					return 0;	//ÀÌ¹Ì Á¸ÀçÇÏ´Â È¸¿ø
-				}else {
-					return 1;	//°¡ÀÔ °¡´ÉÇÑ È¸¿ø ¾ÆÀÌµğ
-				}
+				return pstmt.executeUpdate();
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
 				try {
-					if(rs != null) rs.close();
 					if(pstmt != null) pstmt.close();
 					if(conn != null) conn.close();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
-			return -1;	//µ¥ÀÌÅÍ º£ÀÌ½º ¿À·ù
+			return -1;	//ë°ì´í„° ë² ì´ìŠ¤ ì˜¤ë¥˜
 		}				
 }
