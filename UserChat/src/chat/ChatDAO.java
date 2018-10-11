@@ -210,7 +210,7 @@ public class ChatDAO {
 		return -1;	//데이터베이스 오류
 	}
 	/**
-	 * 읽지 않은 메세지 갯수 읽기 함수
+	 * 읽지 않은 메세지 갯수 읽기 함수(전체)
 	 * 
 	 * @author kds
 	 * @since 2018.10.11
@@ -318,5 +318,44 @@ public class ChatDAO {
 		}
 		return chatList;
 	}
-	
+
+	/**
+	 * 읽지 않은 메세지 갯수 읽기 함수
+	 * 
+	 * @author kds
+	 * @since 2018.10.11
+	 * @param userID : 회원ID(현재 로그인된)
+	 * @return int : chatRead가 0인(읽지 않은) 메세지 count값 반환 
+	 * 			     0 은 조회값 없음	 
+	 * 			     -1 은 데이터베이스 오류 
+	 * 
+	 * */		
+	public int getUnreadChat(String fromID, String toID) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String SQL = "SELECT COUNT(chatID) FROM chat WHERE fromID = ? AND toID = ? AND chatRead = 0";
+		try {
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement(SQL);
+			pstmt.setString(1, fromID);
+			pstmt.setString(2, toID);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				return rs.getInt("COUNT(chatID)");
+			}
+			return 0;	//조회값 없음
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(rs != null) rs.close();
+				if(pstmt != null) pstmt.close();
+				if(conn != null) conn.close();
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return -1;	//데이터베이스 오류
+	}	
 }

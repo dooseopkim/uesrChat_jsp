@@ -65,16 +65,17 @@
 						}else{
 							result[i][1].value = result[i][0].value;
 						}
-						addBox(result[i][0].value, result[i][1].value, result[i][2].value, result[i][3].value);
+						addBox(result[i][0].value, result[i][1].value, result[i][2].value, result[i][3].value, result[i][4].value);
 					}
 				}
 			});
 		}
-		function addBox(lastID, toID, chatContent, chatTime){
+		function addBox(lastID, toID, chatContent, chatTime, unread){
 			$('#boxTable').append('<tr onclick="location.href=\'chat.jsp?toID=' + encodeURIComponent(toID) + '\'">' + 
 					'<td style="width: 150px;"><h5>' + lastID + '</h5></td>' +
 					'<td>' +
-					'<h5>' + chatContent + '</h5>' +
+					'<h5>' + chatContent +
+					'<span class="label labe-info">' + unread + '</span></h5>' +
 					'<div class="pull-right">' + chatTime + '</div>' +
 					'</td>' +
 					'</tr>');

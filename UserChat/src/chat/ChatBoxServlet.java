@@ -37,12 +37,18 @@ public class ChatBoxServlet extends HttpServlet {
 		ChatDAO chatDAO = new ChatDAO();
 		ArrayList<ChatDTO> chatList = chatDAO.getBox(userID);
 		if(chatList.size() == 0) return "";
-		for(int i = 0; i<chatList.size(); i++) {
+		for(int i = chatList.size() - 1; i >= 0; i--) {
+			String unread = "";
+			if(userID.equals(chatList.get(i).getToID())) {
+				unread = chatDAO.getUnreadChat(chatList.get(i).getFromID(), userID) + "";
+				if(unread.equals("0")) unread ="";
+			}
 			result.append("[{\"value\":\"" + chatList.get(i).getFromID() + "\"},");
 			result.append("{\"value\":\"" + chatList.get(i).getToID() + "\"},");
 			result.append("{\"value\":\"" + chatList.get(i).getChatContent() + "\"},");
-			result.append("{\"value\":\"" + chatList.get(i).getChatTime() + "\"}]");
-			if(i != chatList.size() - 1) result.append(",");
+			result.append("{\"value\":\"" + chatList.get(i).getChatTime() + "\"},");
+			result.append("{\"value\":\"" + unread + "\"}]");
+			if(i != 0) result.append(",");
 		}
 		result.append("], \"last\":\"" + chatList.get(chatList.size() - 1).getChatID() + "\"}");
 		return result.toString();
