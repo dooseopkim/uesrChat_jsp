@@ -29,7 +29,7 @@ h1{
 
 /* �뀒�씠釉� 愿��젴 �뵒�옄�씤 泥섎━ */
 thead th{
-	background-color: #006DCC;
+	background-color: #f768a1;
 	color: white;
 	text-align: center;
 }
@@ -234,4 +234,90 @@ tr th:last-child{
 
 .text-red {
     color: #e74c3c;
-}                
+}
+
+/* 전체 링크 관련 영역 */
+a{
+	color: #000000;
+	text-decoration: none;
+}        
+a:hover{
+	color: #bbbbbb;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+/* 네비게이션 영역 */
+.navbar-default{
+	background-color: #f768a1;
+	border-color: #dd3497;
+	border-bottom-color: #fde0dd;
+	border-bottom-width: 3px;
+	border-radius: 0px;
+}
+.navbar-default .navbar-brand{	/* 네비게이션 제목 색상 */
+	color: #ffffff;
+	padding-top: 25px;
+	font-family: 'Hanna';
+}
+.navbar-default .navbar-brand:hover,
+.navbar-default .navbar-brand:focus{	/* 네비게이션 제목에 마우스를 올렸을 때 */
+	color: #dddddd;
+	background-color: transparent;
+}
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:hover,
+.navbar-default .navbar-nav > .active > a:focus{	/* 선택된 네비게이션 마우스 색상 이벤트 */
+	color: #ffffff;
+	background-color: #dd3497;
+}
+.navbar-default .navbar-nav > li > a {	/* 네비게이션 글자 기본 폰트 변경 */
+	color: white;
+	font-family: 'Noto Sans KR';
+}
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus{	/* 네비게이션 글자에 마우스를 올렸을 때 */
+	color: #dddddd;
+}
+.navbar-default .navbar-nav > .open > a,
+.navbar-default .navbar-nav > .open > a:hover,
+.navbar-default .navbar-nav > .open > a:focus{	/* 열린 드랍다운 마우스 색상 이벤트 */
+	color: #ffffff;
+	text-decoration: none;
+	background-color: #fa9fb5;
+}
+.navbar-default navbar-toggle:hover,
+.navbar-default navbar-toggle:focus{	/* 토글에 마우스를 올렸을 때 */
+	background-color: #dd3497;
+}
+.navbar-default .navbar-toggle .icon-bar{	/* 토글 아이콘바 색상 */
+	background-color: #fcc5c0;
+}
+
+.navbar-fixed-top{	/* 네비게이션 바 길이 수정 */
+	min-height: 70px;
+}
+.navbar-nav > li > a{
+	padding-top: 0px;
+	padding-bottom: 0px;
+	line-height: 70px;
+}
+@media(max-width: 767px){	/* 작은 화면일 때 드랍다운 아이템에 마우스를 올렸을 때 */
+	.navbar-default .navbar-nav .open .dropdown-menu > li > a {
+		color: #ffffff;
+	}
+	.navbar-default .navbar-nav .open .dropdown-menu > li > a:hover,
+	.navbar-default .navbar-nav .open .dropdown-menu > li > a:focus{
+		color: #eeeeee;
+	}
+}
+@media(max-width: 767px){
+	.navbar-default .navbar-brand{
+		padding-top: 15px;
+	}
+	.navbar-nav > li > a {
+		padding-top: 0px;
+		padding-bottom: 0px;
+		line-height: 40px;
+	}
+}
