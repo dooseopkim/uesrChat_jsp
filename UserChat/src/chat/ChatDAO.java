@@ -97,7 +97,7 @@ public class ChatDAO {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		String SQL = "SELECT * FROM CHAT WHERE ((fromID = ? AND toID = ? ) OR (fromID = ? AND toID = ?)) AND chatID > (SELECT MAX(chatID) - ? FROM CHAT) ORDER BY chatTime";
+		String SQL = "SELECT * FROM CHAT WHERE ((fromID = ? AND toID = ? ) OR (fromID = ? AND toID = ?)) AND chatID > (SELECT MAX(chatID) - ? FROM chat WHERE (fromID = ? AND toID = ?) OR (toID = ? AND fromID = ?)) ORDER BY chatTime";
 		try {
 			conn = dataSource.getConnection();
 			pstmt = conn.prepareStatement(SQL);
@@ -106,6 +106,10 @@ public class ChatDAO {
 			pstmt.setString(3, toID);
 			pstmt.setString(4, fromID);
 			pstmt.setInt(5, number);
+			pstmt.setString(6, fromID);
+			pstmt.setString(7, toID);
+			pstmt.setString(8, toID);
+			pstmt.setString(9, fromID);			
 			rs = pstmt.executeQuery();
 			chatList = new ArrayList<ChatDTO>();
 			while(rs.next()) {
@@ -150,7 +154,7 @@ public class ChatDAO {
 	public int submit(String fromID, String toID, String chatContent){
 		Connection conn = null;
 		PreparedStatement pstmt = null;
-		String SQL = "INSERT INTO CHAT VALUES(NULL, ?, ?, ?, NOW())";
+		String SQL = "INSERT INTO CHAT VALUES(NULL, ?, ?, ?, NOW(), 0)";
 		try {
 			conn = dataSource.getConnection();
 			pstmt = conn.prepareStatement(SQL);
@@ -169,5 +173,78 @@ public class ChatDAO {
 			} 
 		}
 		return -1;	//데이터베이스 오류
-	}	
+	}
+	
+	/**
+	 * 메세지 읽기 함수
+	 * 
+	 * @author kds
+	 * @since 2018.10.11
+	 * @param fromID : 보내는 회원ID,
+	 * 		  toID : 받는 회원ID,
+	 * @return int : chatRead가 0(안 읽음) --> 1(읽음) 으로 수정된 갯수
+	 * 			     -1 은 데이터베이스 오류
+	 * */	
+	public int readChat(String fromID, String toID) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String SQL = "UPDATE chat SET chatRead = 1 WHERE (fromID = ? AND toID = ?)";
+		try {
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement(SQL);
+			pstmt.setString(1, fromID);
+			pstmt.setString(2, toID);
+			return pstmt.executeUpdate();
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(rs != null) rs.close();
+				if(pstmt != null) pstmt.close();
+				if(conn != null) conn.close();
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return -1;	//데이터베이스 오류
+	}
+	/**
+	 * 읽지 않은 메세지 갯수 읽기 함수
+	 * 
+	 * @author kds
+	 * @since 2018.10.11
+	 * @param userID : 회원ID(현재 로그인된)
+	 * @return int : chatRead가 0인(읽지 않은) 메세지 count값 반환 
+	 * 			     0 은 조회값 없음	 
+	 * 			     -1 은 데이터베이스 오류 
+	 * 
+	 * */		
+	public int getAllUnreadChat(String userID) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String SQL = "SELECT COUNT(chatID) FROM chat WHERE toID = ? AND chatRead = 0";
+		try {
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement(SQL);
+			pstmt.setString(1, userID);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				return rs.getInt("COUNT(chatID)");
+			}
+			return 0;	//조회값 없음
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(rs != null) rs.close();
+				if(pstmt != null) pstmt.close();
+				if(conn != null) conn.close();
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return -1;	//데이터베이스 오류
+	}
 }
