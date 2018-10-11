@@ -19,44 +19,42 @@ public class ChatListServlet extends HttpServlet {
 		response.setContentType("text/html;charset=UTF-8");
 		String fromID = request.getParameter("fromID");
 		String toID = request.getParameter("toID");
-		String listType = request.getParameter("listType");
+		String lastID = request.getParameter("lastID");
 		if(fromID == null || fromID.equals("") || toID == null || toID.equals("")
-				|| listType == null || listType.equals("")) {
+				|| lastID == null || lastID.equals("")) {
 			response.getWriter().write("");
-		} else if(listType.equals("ten")) {
-			response.getWriter().write(getTen(URLDecoder.decode(fromID,"UTF-8"), URLDecoder.decode(toID,"UTF-8")));
-		} else {
+		}  else {
 			try {
-				response.getWriter().write(getID(URLDecoder.decode(fromID,"UTF-8"), URLDecoder.decode(toID,"UTF-8"), URLDecoder.decode(listType,"UTF-8")));
+				response.getWriter().write(getID(URLDecoder.decode(fromID,"UTF-8"), URLDecoder.decode(toID,"UTF-8"), lastID));
 			} catch(Exception e) {
 				response.getWriter().write("");
 			}
 		}
 	}
 	
-	public String getTen(String fromID, String toID) {
-		StringBuffer result = new StringBuffer("");
-		result.append("{\"result\":[");
-		ChatDAO chatDAO = new ChatDAO();
-		ArrayList<ChatDTO> chatList = chatDAO.getChatListByRecent(fromID, toID, 100);
-		if(chatList.size() == 0) return "";
-		for(int i = 0; i<chatList.size(); i++) {
-			result.append("[{\"value\":\"" + chatList.get(i).getFromID() + "\"},");
-			result.append("{\"value\":\"" + chatList.get(i).getToID() + "\"},");
-			result.append("{\"value\":\"" + chatList.get(i).getChatContent() + "\"},");
-			result.append("{\"value\":\"" + chatList.get(i).getChatTime() + "\"}]");
-			if(i != chatList.size() - 1) result.append(",");
-		}
-		result.append("], \"last\":\"" + chatList.get(chatList.size() - 1).getChatID() + "\"}");
-		chatDAO.readChat(fromID, toID);
-		return result.toString();
-	}
+//	public String getTen(String fromID, String toID) {
+//		StringBuffer result = new StringBuffer("");
+//		result.append("{\"result\":[");
+//		ChatDAO chatDAO = new ChatDAO();
+//		ArrayList<ChatDTO> chatList = chatDAO.getChatListByRecent(fromID, toID, 100);
+//		if(chatList.size() == 0) return "";
+//		for(int i = 0; i<chatList.size(); i++) {
+//			result.append("[{\"value\":\"" + chatList.get(i).getFromID() + "\"},");
+//			result.append("{\"value\":\"" + chatList.get(i).getToID() + "\"},");
+//			result.append("{\"value\":\"" + chatList.get(i).getChatContent() + "\"},");
+//			result.append("{\"value\":\"" + chatList.get(i).getChatTime() + "\"}]");
+//			if(i != chatList.size() - 1) result.append(",");
+//		}
+//		result.append("], \"last\":\"" + chatList.get(chatList.size() - 1).getChatID() + "\"}");
+//		chatDAO.readChat(fromID, toID);
+//		return result.toString();
+//	}
 	
-	public String getID(String fromID, String toID, String chatID) {
+	public String getID(String fromID, String toID, String lastID) {
 		StringBuffer result = new StringBuffer("");
 		result.append("{\"result\":[");
 		ChatDAO chatDAO = new ChatDAO();
-		ArrayList<ChatDTO> chatList = chatDAO.getChatListByID(fromID, toID, chatID);
+		ArrayList<ChatDTO> chatList = chatDAO.getChatListByID(fromID, toID, lastID);
 		if(chatList.size() == 0) return "";
 		for(int i = 0; i<chatList.size(); i++) {
 			result.append("[{\"value\":\"" + chatList.get(i).getFromID() + "\"},");

@@ -38,6 +38,8 @@
 			alert.show();
 			window.setTimeout(function() {alert.hide()}, delay);
 		}
+		
+		<!-- 메세지 전송 -->
 		function submitFunction(){
 			var fromID = '<%= userID %>';
 			var toID = '<%= toID %>';
@@ -62,8 +64,10 @@
 			});
 			$('#chatContent').val('');
 		}
+		
 		var lastID = 0;
-		function chatListFunction(type){
+		<!-- 메세지 리스트  조회 -->
+		function chatListFunction(lastIdx){
 			var fromID = '<%= userID %>';
 			var toID = '<%= toID %>';
 			$.ajax({
@@ -72,7 +76,7 @@
 				data: {
 					fromID : encodeURIComponent(fromID),
 					toID : encodeURIComponent(toID),
-					listType : type
+					lastID : lastIdx
 				},
 				success : function(data){
 					if(data == "") return;
@@ -88,6 +92,8 @@
 				}
 			});
 		}
+		
+		<!-- 메세지 화면 출력 -->
 		function addChat(chatName, chatContent, chatTime){
 			$('#chatList').append('<div class="row">' +
 					'<div class="col-lg-12">' +
@@ -112,13 +118,40 @@
 					'<hr>');
 			$('#chatList').scrollTop($('#chatList')[0].scrollHeight);
 		}
+		<!-- 채팅방 3초마다 조회 (갱신) -->
 		function getInfiniteChat(){
 			setInterval(function(){
 				chatListFunction(lastID);
 			}, 3000);
 		}
-		
-</script>	
+		<!-- 읽지 않은 메세지 갯수 조회 -->
+		function getUnread(){
+			$.ajax({
+				type: "POST",
+				url: "./chatUnread",
+				data: {
+					userID: encodeURIComponent('<%= userID %>')
+				},
+				success: function(result){
+					if(result >= 1){
+						showUnread(result);
+					}else{
+						showUnread('');
+					}
+				}
+			});
+		}
+		<!-- 읽지 않은 메세지 갯수 4초마다 조회(갱신)-->
+		function getInfiniteUnread(){
+			setInterval(function(){
+				getUnread();
+			}, 4000);
+		}
+		<!-- 읽지 않은 메세지 갯수 출력 -->
+		function showUnread(result){
+			$('#unread').html(result);
+		}		
+</script>
 </head>
 <body>
 
@@ -137,6 +170,7 @@
 			<ul class="nav navbar-nav">
 				<li><a href="index.jsp">메인</a>
 				<li><a href="find.jsp">친구찾기</a>
+				<li><a href="box.jsp">메세지함<span id="unread" class="label label-info"></span></a></li>
 			</ul>
 			<%
 				if(userID != null){
@@ -239,8 +273,9 @@
 	%>
 	<script type="text/javascript">
 		$(document).ready(function(){
-			chatListFunction('ten');
+			chatListFunction('0');
 			getInfiniteChat();
+			getInfiniteUnread();
 		});
 	</script>
 </body>
