@@ -79,6 +79,9 @@
 					var parsed = JSON.parse(data);
 					var result = parsed.result;
 					for(var i = 0; i < result.length; i++){
+						if(result[i][0].value == fromID){
+							result[i][0].value = '나';
+						}
 						addChat(result[i][0].value, result[i][2].value, result[i][3].value);
 					}
 					lastID = Number(parsed.last);
@@ -132,7 +135,8 @@
 		</div>
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
-				<li class="active"><a href="index.jsp">메인</a>
+				<li><a href="index.jsp">메인</a>
+				<li><a href="find.jsp">친구찾기</a>
 			</ul>
 			<%
 				if(userID != null){
