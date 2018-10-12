@@ -114,6 +114,7 @@
 					</a>
 					<ul class="dropdown-menu">
 						<li><a href="update.jsp">회원정보수정</a></li>
+						<li><a href="profileUpdate.jsp">프로필 수정</a></li>
 						<li><a href="logoutAction.jsp">로그아웃</a></li>
 					</ul>					
 				</li>					

@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.net.URLDecoder" %>
+<%@ page import="user.UserDAO" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -29,7 +30,9 @@
 			session.setAttribute("messageContent", "자기 자신에게는 메세지를 보낼 수 없습니다.");
 			response.sendRedirect("index.jsp");
 			return;
-		}		
+		}
+		String fromProfile = new UserDAO().getProfile(userID);
+		String toProfile = new UserDAO().getProfile(toID);
 	%>
 	
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -102,27 +105,51 @@
 		
 		<!-- 메세지 화면 출력 -->
 		function addChat(chatName, chatContent, chatTime){
-			$('#chatList').append('<div class="row">' +
-					'<div class="col-lg-12">' +
-					'<div class="media">' +
-					'<a class="pull-left" href="#">' +
-					'<img class="media-object img-circle" style="width: 30px; height: 30px;" src="images/icon.jpg" alt="">' +
-					'</a>' +
-					'<div class="media-body">' +
-					'<h4 class="media-heading">' +
-					chatName +
-					'<span class="small pull-right">' +
-					chatTime +
-					'</span>' +
-					'</h4>' +
-					'<p>' +
-					chatContent +
-					'</p>' +
-					'</div>' +
-					'</div>' +
-					'</div>' +
-					'</div>' +
-					'<hr>');
+			if(chatName == '나'){
+				$('#chatList').append('<div class="row">' +
+						'<div class="col-lg-12">' +
+						'<div class="media">' +
+						'<a class="pull-left" href="#">' +
+						'<img class="media-object img-circle" style="width: 30px; height: 30px;" src="<%= fromProfile %>" alt="">' +
+						'</a>' +
+						'<div class="media-body">' +
+						'<h4 class="media-heading">' +
+						chatName +
+						'<span class="small pull-right">' +
+						chatTime +
+						'</span>' +
+						'</h4>' +
+						'<p>' +
+						chatContent +
+						'</p>' +
+						'</div>' +
+						'</div>' +
+						'</div>' +
+						'</div>' +
+						'<hr>');
+			} else {
+				$('#chatList').append('<div class="row">' +
+						'<div class="col-lg-12">' +
+						'<div class="media">' +
+						'<a class="pull-left" href="#">' +
+						'<img class="media-object img-circle" style="width: 30px; height: 30px;" src="<%= toProfile %>" alt="">' +
+						'</a>' +
+						'<div class="media-body">' +
+						'<h4 class="media-heading">' +
+						chatName +
+						'<span class="small pull-right">' +
+						chatTime +
+						'</span>' +
+						'</h4>' +
+						'<p>' +
+						chatContent +
+						'</p>' +
+						'</div>' +
+						'</div>' +
+						'</div>' +
+						'</div>' +
+						'<hr>');
+			}
 			$('#chatList').scrollTop($('#chatList')[0].scrollHeight);
 		}
 		<!-- 채팅방 3초마다 조회 (갱신) -->
@@ -190,6 +217,7 @@
 					</a>
 					<ul class="dropdown-menu">
 						<li><a href="update.jsp">회원정보수정</a></li>
+						<li><a href="profileUpdate.jsp">프로필 수정</a></li>
 						<li><a href="logoutAction.jsp">로그아웃</a></li>
 					</ul>							
 				</li>					

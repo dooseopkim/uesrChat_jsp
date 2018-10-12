@@ -29,7 +29,7 @@ public class ChatSubmitServlet extends HttpServlet {
 			fromID = URLDecoder.decode(fromID, "UTF-8");
 			toID = URLDecoder.decode(toID, "UTF-8");
 			HttpSession session = request.getSession();
-			if(!fromID.equals((String) session.getAttribute("userID"))) {
+			if(!URLDecoder.decode(fromID, "UTF-8").equals((String) session.getAttribute("userID"))) {
 				response.getWriter().write("");
 				return;
 			}
