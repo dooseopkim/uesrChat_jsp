@@ -37,24 +37,6 @@
 				$('#passwordCheckMessage').html('');
 			}
 		}
-		function emailSendFunction(){
-			var userEmail = $('#userEmail').val();
-			$.ajax({
-				type: 'POST',
-				url: './UserEmailCheckServlet',
-				data: {userEmail: userEmail},
-				success: function(result){
-					if(result ==1){
-						$('#checkMessage').html('사용할 수 있는 이메일입니다.');
-						$('#checkType').attr('class', 'modal-content panel-success');
-					}else{
-						$('#checkMessage').html('사용할 수 없는 이메일입니다.');
-						$('#checkType').attr('class', 'modal-content panel-warning');
-					}
-					$('#checkModal').modal("show");
-				}
-			});
-		}
 	</script>
 </head>
 <body>
@@ -154,8 +136,7 @@
 					</tr>							
 					<tr>
 						<td style="width:110px;"><h5>이메일</h5></td>
-						<td><input class="form-control" id="userEmail" name="userEmail" type="email" maxlength="20" placeholder="이메일을 입력하세요."></td>
-						<td style="width:110px;"><button class="btn btn-primary" onclick="emailSendFunction();" type="button">중복체크</button></td>
+						<td colspan="2"><input class="form-control" id="userEmail" name="userEmail" type="email" maxlength="20" placeholder="이메일을 입력하세요."></td>
 					</tr>
 					<tr>
 						<td style="text-align: Left;" colspan="3"><h5 style="color:red;" id="passwordCheckMessage"></h5><input class="btn btn-primary pull-right" type="submit" value="등록"></td>

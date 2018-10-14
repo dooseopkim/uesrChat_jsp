@@ -9,6 +9,7 @@ public class UserDTO {
 	String userGender;
 	String userEmail;
 	String userProfile;
+	String userEmailChecked;
 	
 	public String getUserID() {
 		return userID;
@@ -52,6 +53,14 @@ public class UserDTO {
 	public void setUserProfile(String userProfile) {
 		this.userProfile = userProfile;
 	}
+	public String getUserEmailChecked() {
+		return userEmailChecked;
+	}
+	public void setUserEmailChecked(String userEmailChecked) {
+		this.userEmailChecked = userEmailChecked;
+	}
+	
+	
 	
 	
 }

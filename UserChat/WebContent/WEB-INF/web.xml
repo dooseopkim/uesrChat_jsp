@@ -76,4 +76,12 @@
     <servlet-name>UserProfileServlet</servlet-name>
     <url-pattern>/userProfile</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>UserEmailAuthServlet</servlet-name>
+    <servlet-class>user.UserEmailAuthServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UserEmailAuthServlet</servlet-name>
+    <url-pattern>/userEmailAuth</url-pattern>
+  </servlet-mapping>
 </web-app>

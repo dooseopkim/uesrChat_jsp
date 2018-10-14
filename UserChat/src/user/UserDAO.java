@@ -8,6 +8,8 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
+import util.SHA256;
+
 
 public class UserDAO {
 
@@ -118,7 +120,7 @@ public class UserDAO {
 		public int register(String userID,String userPassword, String userName, String userAge, String userGender, String userEmail, String userProfile) {
 			Connection conn = null;
 			PreparedStatement pstmt = null;
-			String SQL = "INSERT INTO USER VALUES(?,?,?,?,?,?,?)";
+			String SQL = "INSERT INTO USER VALUES(?,?,?,?,?,?,?,?,'0')";
 			try {
 				conn = dataSource.getConnection();
 				pstmt = conn.prepareStatement(SQL);
@@ -129,6 +131,7 @@ public class UserDAO {
 				pstmt.setString(5, userGender);
 				pstmt.setString(6, userEmail);
 				pstmt.setString(7, userProfile);
+				pstmt.setString(8, SHA256.getSHA256(userEmail));
 				return pstmt.executeUpdate();
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -298,5 +301,115 @@ public class UserDAO {
 				}
 			}
 			return "http://localhost:9001/UserChat/images/icon.jpg";
-		}			
+		}		
+
+		/**
+		 * 이메일 중복체크 함수
+		 * 
+		 * @author kds
+		 * @since 2018.10.10
+		 * @param userEmail : 회원 이메일
+		 * 
+		 * */
+		public int emailCheck(String userEmail) {
+			Connection conn = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String SQL = "SELECT * FROM USER WHERE userEmail = ?";
+			try {
+				conn = dataSource.getConnection();
+				pstmt = conn.prepareStatement(SQL);
+				pstmt.setString(1, userEmail);
+				rs = pstmt.executeQuery();
+				if (rs.next()) {
+					return 0;	//이미 존재하는 이메일주소
+				}else {
+					return 1;	//가입 가능한 이메일주소
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					if(rs != null) rs.close();
+					if(pstmt != null) pstmt.close();
+					if(conn != null) conn.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			return -1;	//데이터 베이스 오류
+		}
+		
+		/**
+		 * 이메일 인증체크 함수
+		 * 
+		 * @author kds
+		 * @since 2018.10.10
+		 * @param userID : 회원 아이디
+		 * 
+		 * */
+		public int emailAuthCheck(String userID) {
+			Connection conn = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String SQL = "SELECT * FROM USER WHERE userID = ?";
+			try {
+				conn = dataSource.getConnection();
+				pstmt = conn.prepareStatement(SQL);
+				pstmt.setString(1, userID);
+				rs = pstmt.executeQuery();
+				String userEmailChecked = null;
+				if (rs.next()) {
+					userEmailChecked = rs.getString("userEmailChecked");
+				}
+				if(Integer.parseInt(userEmailChecked) == 0) {
+					return 0;	//이메일 인증 X
+				}else {
+					return 1;	//이메일 인증 O
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					if(rs != null) rs.close();
+					if(pstmt != null) pstmt.close();
+					if(conn != null) conn.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			return -1;	//데이터 베이스 오류
+		}		
+		
+		/**
+		 * 이메일 인증체크 함수
+		 * 
+		 * @author kds
+		 * @since 2018.10.10
+		 * @param userID : 회원 아이디
+		 * 
+		 * */
+		public int emailAuthUpdate(String userID) {
+			Connection conn = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String SQL = "UPDATE user SET userEmailChecked = 1 WHERE userID = ?";
+			try {
+				conn = dataSource.getConnection();
+				pstmt = conn.prepareStatement(SQL);
+				pstmt.setString(1, userID);
+				return pstmt.executeUpdate();
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					if(rs != null) rs.close();
+					if(pstmt != null) pstmt.close();
+					if(conn != null) conn.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			return -1;	//데이터 베이스 오류
+		}	
 }

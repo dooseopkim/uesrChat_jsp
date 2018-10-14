@@ -18,5 +18,7 @@ public class UserRegisterCheckServlet extends HttpServlet {
 		if(userID == null || userID.equals("")) response.getWriter().write("-1");
 		response.getWriter().write(new UserDAO().registerCheck(userID)+"");
 	}
+	
+	
 
 }
