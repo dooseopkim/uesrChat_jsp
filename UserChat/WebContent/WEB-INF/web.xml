@@ -84,4 +84,12 @@
     <servlet-name>UserEmailAuthServlet</servlet-name>
     <url-pattern>/userEmailAuth</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>BoardWriteServlet</servlet-name>
+    <servlet-class>board.BoardWriteServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>BoardWriteServlet</servlet-name>
+    <url-pattern>/boardWrite</url-pattern>
+  </servlet-mapping>
 </web-app>

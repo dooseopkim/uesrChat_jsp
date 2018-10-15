@@ -40,7 +40,7 @@ public class UserEmailAuthServlet extends HttpServlet {
 		userEmail = userDAO.getUser(userID).getUserEmail();
 		boolean isRight = (SHA256.getSHA256(userEmail).equals(code))? true:false;
 		if(isRight) {
-			userDAO.emailAuthCheck(userID);
+			userDAO.emailAuthUpdate(userID);
 			request.getSession().setAttribute("messageType", "성공 메세지");
 			request.getSession().setAttribute("messageContent", "이메일 인증에 성공했습니다.");
 			response.sendRedirect("index.jsp");
