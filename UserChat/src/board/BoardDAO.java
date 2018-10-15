@@ -273,7 +273,7 @@ public class BoardDAO {
 	}
 	
 	/**
-	 * 게시글 등록 함수
+	 * 게시글 수정 함수
 	 * 
 	 * @author kds
 	 * @since 2018.10.10
@@ -311,4 +311,115 @@ public class BoardDAO {
 		}
 		return -1;	//데이터 베이스 오류
 	}	
+	
+	/**
+	 * 게시글 등록 함수
+	 * 
+	 * @author kds
+	 * @since 2018.10.10
+	 * @param boardID : 게시글 아이디
+	 * 
+	 * */
+	public int delete(String boardID) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		String SQL = "DELETE FROM board WHERE boardID = ?";
+		try {
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement(SQL);
+			pstmt.setInt(1, Integer.parseInt(boardID));
+			return pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(pstmt != null) pstmt.close();
+				if(conn != null) conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return -1;	//데이터 베이스 오류
+	}
+	
+	/**
+	 * 답변 등록 함수
+	 * 
+	 * @author kds
+	 * @since 2018.10.10
+	 * @param userID : 회원 아이디,
+	 *		  userPassword : 비밀번호,
+	 *		  userName : 이름,
+	 *		  userAge : 나이,
+	 *		  userGender : 성별,
+	 *		  userEmail : 이메일,
+	 *		  userProfile : 프로필(사진)
+	 * 
+	 * */
+	public int reply(String userID,String boardTitle, String boardContent, String boardFile, String boardRealFile, BoardDTO parent) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		String SQL = "INSERT INTO board SELECT ?, IFNULL((SELECT MAX(boardID) + 1 FROM board),1), ?, ?, NOW(), 0, ?, ?, ?, ?, ?";
+		try {
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement(SQL);
+			pstmt.setString(1, userID);
+			pstmt.setString(2, boardTitle);
+			pstmt.setString(3, boardContent);
+			pstmt.setString(4, boardFile);
+			pstmt.setString(5, boardRealFile);
+			pstmt.setInt(6, parent.getBoardGroup());
+			pstmt.setInt(7, parent.getBoardSequence() + 1);
+			pstmt.setInt(8, parent.getBoardLevel() + 1);
+			
+			return pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(pstmt != null) pstmt.close();
+				if(conn != null) conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return -1;	//데이터 베이스 오류
+	}	
+	
+	/**
+	 * 답변 등록 함수
+	 * 
+	 * @author kds
+	 * @since 2018.10.10
+	 * @param userID : 회원 아이디,
+	 *		  userPassword : 비밀번호,
+	 *		  userName : 이름,
+	 *		  userAge : 나이,
+	 *		  userGender : 성별,
+	 *		  userEmail : 이메일,
+	 *		  userProfile : 프로필(사진)
+	 * 
+	 * */
+	public int replyUpdate(BoardDTO parent) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		String SQL = "UPDATE board SET boardSequence = boardSequence + 1 WHERE boardGroup = ? AND boardSequence > ?";
+		try {
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement(SQL);
+			pstmt.setInt(1, parent.getBoardGroup());
+			pstmt.setInt(2, parent.getBoardSequence());
+			return pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(pstmt != null) pstmt.close();
+				if(conn != null) conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return -1;	//데이터 베이스 오류
+	}
 }

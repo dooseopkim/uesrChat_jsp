@@ -108,4 +108,20 @@
     <servlet-name>BoardDownLoadServlet</servlet-name>
     <url-pattern>/boardDownLoad</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>BoardDeleteServlet</servlet-name>
+    <servlet-class>board.BoardDeleteServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>BoardDeleteServlet</servlet-name>
+    <url-pattern>/boardDelete</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>BoardReplyServlet</servlet-name>
+    <servlet-class>board.BoardReplyServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>BoardReplyServlet</servlet-name>
+    <url-pattern>/boardReply</url-pattern>
+  </servlet-mapping>
 </web-app>
