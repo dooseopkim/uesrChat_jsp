@@ -29,7 +29,7 @@ public class BoardWriteServlet extends HttpServlet {
 		} catch(Exception e) {
 			request.getSession().setAttribute("messageType", "오류 메세지");
 			request.getSession().setAttribute("messageContent", "파일 크기는 10MB를 넘을 수 없습니다.");
-			response.sendRedirect("profileUpdate.jsp");
+			response.sendRedirect("index.jsp");
 			return;
 		}
 		String userID = multi.getParameter("userID");

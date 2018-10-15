@@ -139,9 +139,9 @@ public class BoardDAO {
 				BoardDTO board = new BoardDTO();
 				board.setUserID(rs.getString("userID"));
 				board.setBoardID(rs.getInt("boardID"));
-				board.setBoardTitle(rs.getString("boardTitle"));
-				board.setBoardContent(rs.getString("boardContent"));
-				board.setBoardDate(rs.getString("boardDate"));
+				board.setBoardTitle(rs.getString("boardTitle").replaceAll(" ", "&nbsp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>"));
+				board.setBoardContent(rs.getString("boardContent").replaceAll(" ", "&nbsp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>"));
+				board.setBoardDate(rs.getString("boardDate").substring(0, 11));
 				board.setBoardHit(rs.getInt("boardHit"));
 				board.setBoardFile(rs.getString("boardFile"));
 				board.setBoardRealFile(rs.getString("boardRealFile"));
@@ -163,4 +163,152 @@ public class BoardDAO {
 		}
 		return boardList;
 	}
+	
+	/**
+	 * 조회수 올림 함수
+	 * 
+	 * @author kds
+	 * @since 2018.10.10
+	 * @param userID : 회원 아이디,
+	 *		  userPassword : 비밀번호,
+	 *		  userName : 이름,
+	 *		  userAge : 나이,
+	 *		  userGender : 성별,
+	 *		  userEmail : 이메일,
+	 *		  userProfile : 프로필(사진)
+	 * 
+	 * */
+	public int hit(String boardID) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		String SQL = "UPDATE board SET boardHit = boardHit + 1 WHERE boardID = ?";
+		try {
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement(SQL);
+			pstmt.setString(1, boardID);
+			return pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(pstmt != null) pstmt.close();
+				if(conn != null) conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return -1;	//데이터 베이스 오류
+	}
+	
+	/**
+	 * 게시글 첨부파일 불러오기 함수
+	 * 
+	 * @author kds
+	 * @since 2018.10.13
+	 * @param boardID : 게시글 ID
+	 * 
+	 * */
+	public String getFile(String boardID) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String SQL = "SELECT boardFile FROM board WHERE boardID = ?";
+		try {
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement(SQL);
+			pstmt.setString(1, boardID);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				return rs.getString("boardFile");
+			}
+			return "";
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(rs != null) rs.close();
+				if(pstmt != null) pstmt.close();
+				if(conn != null) conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return "";	
+	}
+	
+	/**
+	 * 게시글 첨부파일 불러오기 함수
+	 * 
+	 * @author kds
+	 * @since 2018.10.13
+	 * @param boardID : 게시글 ID
+	 * 
+	 * */
+	public String getRealFile(String boardID) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String SQL = "SELECT boardRealFile FROM board WHERE boardID = ?";
+		try {
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement(SQL);
+			pstmt.setString(1, boardID);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				return rs.getString("boardRealFile");
+			}
+			return "";
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(rs != null) rs.close();
+				if(pstmt != null) pstmt.close();
+				if(conn != null) conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return "";	
+	}
+	
+	/**
+	 * 게시글 등록 함수
+	 * 
+	 * @author kds
+	 * @since 2018.10.10
+	 * @param userID : 회원 아이디,
+	 *		  userPassword : 비밀번호,
+	 *		  userName : 이름,
+	 *		  userAge : 나이,
+	 *		  userGender : 성별,
+	 *		  userEmail : 이메일,
+	 *		  userProfile : 프로필(사진)
+	 * 
+	 * */
+	public int update(String boardID,String boardTitle, String boardContent, String boardFile, String boardRealFile) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		String SQL = "UPDATE board SET boardTitle = ?, boardContent = ?, boardFile = ?, boardRealFile = ? WHERE boardID = ?";
+		try {
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement(SQL);
+			pstmt.setString(1, boardTitle);
+			pstmt.setString(2, boardContent);
+			pstmt.setString(3, boardFile);
+			pstmt.setString(4, boardRealFile);
+			pstmt.setInt(5, Integer.parseInt(boardID));
+			return pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(pstmt != null) pstmt.close();
+				if(conn != null) conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return -1;	//데이터 베이스 오류
+	}	
 }

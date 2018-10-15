@@ -92,4 +92,20 @@
     <servlet-name>BoardWriteServlet</servlet-name>
     <url-pattern>/boardWrite</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>BoardUpdateServlet</servlet-name>
+    <servlet-class>board.BoardUpdateServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>BoardUpdateServlet</servlet-name>
+    <url-pattern>/boardUpdate</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>BoardDownLoadServlet</servlet-name>
+    <servlet-class>board.BoardDownLoadServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>BoardDownLoadServlet</servlet-name>
+    <url-pattern>/boardDownLoad</url-pattern>
+  </servlet-mapping>
 </web-app>
