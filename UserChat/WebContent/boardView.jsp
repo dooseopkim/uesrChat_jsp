@@ -15,7 +15,19 @@
 		response.sendRedirect("index.jsp");
 		return;
 	}
-	ArrayList<BoardDTO> boardList = new BoardDAO().getBoardList();
+	String pageNumber = "1";
+	if(request.getParameter("pageNumber") != null){
+		pageNumber = request.getParameter("pageNumber");
+	}
+	try{
+		Integer.parseInt(pageNumber);
+	}catch(Exception e){
+		session.setAttribute("messageType", "오류 메세지");
+		session.setAttribute("messageContent", "페이지 번호가 잘못되었습니다.");
+		response.sendRedirect("boardView.jsp");
+		return;
+	}
+	ArrayList<BoardDTO> boardList = new BoardDAO().getBoardList(pageNumber);
 %>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -122,7 +134,7 @@
 				</tr>
 				<tr>
 					<th style="background-color: #fafafa; color: #000000; width: 70px;"><h5>번호</h5></th>
-					<th style="background-color: #fafafa; color: #000000;"><h5>제목</h5></th>
+					<th style="background-color: #fafafa; color: #000000; width: 750px;"><h5>제목</h5></th>
 					<th style="background-color: #fafafa; color: #000000;"><h5>작성자</h5></th>
 					<th style="background-color: #fafafa; color: #000000; width: 100px"><h5>작성 날짜</h5></th>
 					<th style="background-color: #fafafa; color: #000000; width: 70px"><h5>조회수</h5></th>
@@ -136,14 +148,26 @@
 			%>
 				<tr>
 					<td><%= board.getBoardID() %></td>
-					<td style="text-align: left;"><a href=boardShow.jsp?boardID=<%= board.getBoardID() %>>
+					<td style="text-align: left; max-width:750px; text-overflow: ellipsis; overflow: hidden; white-space:nowrap"><a href=boardShow.jsp?boardID=<%= board.getBoardID() %>>
 			<%
 				for(int j = 0; j < board.getBoardLevel(); j++){
 			%>
 					<span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
 			<%	
 				}
-			%><%= board.getBoardContent() %></a></td>
+			%>
+			<%
+				if(board.getBoardAvailable() == 0){
+			%>
+				(삭제된 게시물입니다.)
+			<%
+				}else{
+			%>				
+				<%= board.getBoardTitle() %>
+			<%
+				}
+			%>
+				</a></td>
 					<td><%= board.getUserID() %></td>
 					<td><%= board.getBoardDate() %></td>
 					<td><%= board.getBoardHit() %></td>
@@ -152,7 +176,49 @@
 				}
 			%>
 				<tr>
-					<td colspan="5"><a href="boardWrite.jsp" class="btn btn-primary pull-right" type="submit">글쓰기</a></td>
+					<td colspan="5">
+						<a href="boardWrite.jsp" class="btn btn-primary pull-right" type="submit">글쓰기</a>
+						<ul class="pagination" style="margin: 0 auto;">
+					<%
+						int startPage = (Integer.parseInt(pageNumber) / 10 ) * 10 + 1;
+						if(Integer.parseInt(pageNumber) % 10 ==0) startPage -=10;
+						int targetPage = new BoardDAO().targetPage(pageNumber);
+						if(startPage != 1){
+					%>
+						<li><a href="boardView.jsp?pageView=<%= startPage - 10 %>"><span class="glyphicon glyphicon-chevron-left"></</span></a></li>
+					<%
+						}else{
+					%>
+						<li><span class="glyphicon glyphicon-chevron-left" style="color: gray;"></span></li>
+					<%
+						}
+						for(int i = startPage; i< Integer.parseInt(pageNumber); i++){
+					%>	
+						<li><a href="boardView.jsp?pageNumber=<%= i %>"><%= i %></a></li>
+					<%
+						}
+					%>
+						<li class="active"><a href="boardView.jsp?pageNumber=<%= pageNumber %>"><%= pageNumber %></a></li>
+					<%
+						for(int i = Integer.parseInt(pageNumber) + 1; i <= targetPage + Integer.parseInt(pageNumber); i++){
+							if(i < startPage + 10){							
+					%>
+						<li><a href="boardView.jsp?pageNumber=<%= i %>"><%= i %></a></li>
+					<%
+							}
+						}
+						if(targetPage + Integer.parseInt(pageNumber) > startPage + 9){
+					%>
+						<li><a href="boardView.jsp?pageNumber=<%= startPage + 10 %>"><span class="glyphicon glyphicon-chevron-right"></span></a></li>
+					<%
+						}else{
+					%>
+						<li><span class="glyphicon glyphicon-chevron-right" style="color: gray;"></span></li>
+					<%
+						}
+					%>
+						</ul>
+					</td>
 				</tr>
 			</tbody>
 		</table>

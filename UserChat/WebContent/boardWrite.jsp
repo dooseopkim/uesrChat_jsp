@@ -139,7 +139,7 @@
 					</tr>
 					<tr>
 						<td style="width:110px;"><h5>글 제목</h5></td>
-						<td><input class="form-control" type="text" name="boardTitle" placeholder="글 제목을 입력하세요"></td>
+						<td><input class="form-control" type="text" name="boardTitle" maxlength="200" placeholder="글 제목을 입력하세요"></td>
 					</tr>	
 					<tr>
 						<td style="width:110px;"><h5>글 내용</h5></td>
@@ -159,7 +159,10 @@
 						</td>
 					</tr>
 					<tr>
-						<td style="text-align: Left;" colspan="3"><h5 style="color:red;"></h5><input class="btn btn-primary pull-right" type="submit" value="등록"></td>
+						<td style="text-align: right;" colspan="3">
+							<a href="boardView.jsp" class="btn btn-primary" onclick="return confirm('내용은 저장되지 않습니다. 뒤로 가시겠습니까?');">취소</a>
+							<input class="btn btn-primary" type="submit" value="등록">
+						</td>
 					</tr>																							
 				</tbody>
 			</table>

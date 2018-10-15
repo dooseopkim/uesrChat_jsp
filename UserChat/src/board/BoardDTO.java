@@ -13,6 +13,8 @@ public class BoardDTO {
 	int boardGroup;
 	int boardSequence;
 	int boardLevel;
+	int boardAvailable;
+	
 	public String getUserID() {
 		return userID;
 	}
@@ -78,6 +80,12 @@ public class BoardDTO {
 	}
 	public void setBoardLevel(int boardLevel) {
 		this.boardLevel = boardLevel;
+	}
+	public int getBoardAvailable() {
+		return boardAvailable;
+	}
+	public void setBoardAvailable(int boardAvailable) {
+		this.boardAvailable = boardAvailable;
 	}
 	
 	

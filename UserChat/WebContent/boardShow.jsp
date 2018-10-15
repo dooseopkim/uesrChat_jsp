@@ -26,6 +26,12 @@
 	}
 	BoardDAO boardDAO = new BoardDAO();
 	BoardDTO board = boardDAO.getBoard(boardID);
+	if(board.getBoardAvailable() == 0){
+		session.setAttribute("messageType", "오류 메세지");
+		session.setAttribute("messageContent", "삭제된 게시물입니다.");
+		response.sendRedirect("boardView.jsp");
+		return;
+	}
 	boardDAO.hit(boardID);
 	
 %>
@@ -127,14 +133,14 @@
 		</div>
 	</nav>
 	<div class="container">
-		<table class="table table-bordered table-hover" style="text-align: center; border: 1px solid #dddddd">
+		<table class="table table-bordered table-hover" style="text-align: center; border: 1px solid #dddddd; ">
 			<thead>
 				<tr>
 					<th colspan="4"><h4>게시물 보기</h4></th>
 				</tr>
 				<tr>
 					<th style="background-color: #fafafa; color: #000000; width: 80px;"><h5>제목</h5></th>
-					<td colspan="3"><h5><%= board.getBoardTitle() %></h5></td>
+					<td colspan="3" style="text-align: left;max-width:200px; word-break:break-all;"><h5><%= board.getBoardTitle() %></h5></td>
 				</tr>
 				<tr>
 					<th style="background-color: #fafafa; color: #000000; width: 80px;"><h5>작성자</h5></th>
@@ -144,11 +150,11 @@
 					<th style="background-color: #fafafa; color: #000000; width: 80px;"><h5>작성날짜</h5></th>
 					<td><h5><%= board.getBoardDate() %></h5></td>
 					<th style="background-color: #fafafa; color: #000000; width: 80px;"><h5>조회수</h5></th>
-					<td><%= board.getBoardHit() %></td>
+					<td><%= board.getBoardHit() + 1%></td>
 				</tr>
 				<tr>
 					<th style="vertical-align: middle; min-height: 150px; background-color: #fafafa; color: #000000;"><h5>글 내용</h5></th>
-					<td colspan="3" style="text-align: left;"><h5><%= board.getBoardContent() %></h5></td>
+					<td colspan="3" style="text-align: left;max-width:200px; word-break:break-all;"><h5><%= board.getBoardContent() %></h5></td>
 				</tr>
 				<tr>
 					<th style="background-color: #fafafa; color: #000000; width: 80px;"><h5>첨부파일</h5></th>

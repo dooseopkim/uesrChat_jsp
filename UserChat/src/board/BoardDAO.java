@@ -43,7 +43,7 @@ public class BoardDAO {
 	public int write(String userID,String boardTitle, String boardContent, String boardFile, String boardRealFile) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
-		String SQL = "INSERT INTO board SELECT ?, IFNULL((SELECT MAX(boardID) + 1 FROM board),1), ?, ?, NOW(), 0, ?, ?, IFNULL((SELECT MAX(boardGroup) + 1 FROM board), 0), 0, 0";
+		String SQL = "INSERT INTO board SELECT ?, IFNULL((SELECT MAX(boardID) + 1 FROM board),1), ?, ?, NOW(), 0, ?, ?, IFNULL((SELECT MAX(boardGroup) + 1 FROM board), 0), 0, 0, 1";
 		try {
 			conn = dataSource.getConnection();
 			pstmt = conn.prepareStatement(SQL);
@@ -97,6 +97,7 @@ public class BoardDAO {
 				board.setBoardGroup(rs.getInt("boardGroup"));
 				board.setBoardSequence(rs.getInt("boardSequence"));
 				board.setBoardLevel(rs.getInt("boardLevel"));
+				board.setBoardAvailable(rs.getInt("boardAvailable"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -124,15 +125,17 @@ public class BoardDAO {
 	 * 		  number : 가져올 건수(몇 개의 메세지를 불러올 것인지)
 	 * 
 	 * */		
-	public ArrayList<BoardDTO> getBoardList(){
+	public ArrayList<BoardDTO> getBoardList(String pageNumber){
 		ArrayList<BoardDTO> boardList = null;
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		String SQL = "SELECT * FROM board ORDER BY boardGroup DESC, boardSequence ASC";
+		String SQL = "SELECT * FROM board WHERE boardGroup > (SELECT MAX(boardGroup) FROM board) - ? AND boardGroup <= (SELECT MAX(boardGroup) FROM board) - ? ORDER BY boardGroup DESC, boardSequence ASC";
 		try {
 			conn = dataSource.getConnection();
 			pstmt = conn.prepareStatement(SQL);
+			pstmt.setInt(1, Integer.parseInt(pageNumber) * 10);
+			pstmt.setInt(2, (Integer.parseInt(pageNumber) - 1)* 10);
 			rs = pstmt.executeQuery();
 			boardList = new ArrayList<BoardDTO>();
 			while(rs.next()) {
@@ -148,6 +151,7 @@ public class BoardDAO {
 				board.setBoardGroup(rs.getInt("boardGroup"));
 				board.setBoardSequence(rs.getInt("boardSequence"));
 				board.setBoardLevel(rs.getInt("boardLevel"));
+				board.setBoardAvailable(rs.getInt("boardAvailable"));
 				boardList.add(board);
 			}
 		} catch(Exception e) {
@@ -323,7 +327,7 @@ public class BoardDAO {
 	public int delete(String boardID) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
-		String SQL = "DELETE FROM board WHERE boardID = ?";
+		String SQL = "UPDATE board SET boardAvailable = 0 WHERE boardID = ?";
 		try {
 			conn = dataSource.getConnection();
 			pstmt = conn.prepareStatement(SQL);
@@ -359,7 +363,7 @@ public class BoardDAO {
 	public int reply(String userID,String boardTitle, String boardContent, String boardFile, String boardRealFile, BoardDTO parent) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
-		String SQL = "INSERT INTO board SELECT ?, IFNULL((SELECT MAX(boardID) + 1 FROM board),1), ?, ?, NOW(), 0, ?, ?, ?, ?, ?";
+		String SQL = "INSERT INTO board SELECT ?, IFNULL((SELECT MAX(boardID) + 1 FROM board),1), ?, ?, NOW(), 0, ?, ?, ?, ?, ?, 1";
 		try {
 			conn = dataSource.getConnection();
 			pstmt = conn.prepareStatement(SQL);
@@ -371,6 +375,7 @@ public class BoardDAO {
 			pstmt.setInt(6, parent.getBoardGroup());
 			pstmt.setInt(7, parent.getBoardSequence() + 1);
 			pstmt.setInt(8, parent.getBoardLevel() + 1);
+			
 			
 			return pstmt.executeUpdate();
 		} catch (Exception e) {
@@ -422,4 +427,72 @@ public class BoardDAO {
 		}
 		return -1;	//데이터 베이스 오류
 	}
+	/**
+	 * 다음 페이지가 존재하는지 조회하는 함수
+	 * 
+	 * @author kds
+	 * @since 2018.10.13
+	 * @param pageNumber : 페이지 넘버
+	 * 
+	 * */
+	public boolean nextPage(String pageNumber) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String SQL = "SELECT * FROM board WHERE boardGroup >= ?";
+		try {
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement(SQL);
+			pstmt.setInt(1, Integer.parseInt(pageNumber) * 10);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(rs != null) rs.close();
+				if(pstmt != null) pstmt.close();
+				if(conn != null) conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return false;	
+	}
+	/**
+	 * 다음 페이지가 존재하는지 조회하는 함수
+	 * 
+	 * @author kds
+	 * @since 2018.10.13
+	 * @param pageNumber : 페이지 넘버
+	 * 
+	 * */
+	public int targetPage(String pageNumber) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String SQL = "SELECT COUNT(boardGroup) FROM board WHERE boardGroup > ?";
+		try {
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement(SQL);
+			pstmt.setInt(1, (Integer.parseInt(pageNumber) - 1) * 10);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				return rs.getInt(1) / 10;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(rs != null) rs.close();
+				if(pstmt != null) pstmt.close();
+				if(conn != null) conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return 0;	
+	}	
 }
